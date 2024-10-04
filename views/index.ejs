@@ -1,0 +1,46 @@
+<%- include("partials/header.ejs") %>
+
+<h1>The Blog</h1>
+
+<form action="/submit" method="POST">
+    <input type="text" name="title" placeholder="Post title" required>
+    <textarea name="content" placeholder="Write your post!" required></textarea>
+    <input type="submit" value="Add your post!">
+</form>
+
+<% if (posts.length > 0) { %>
+    <% posts.forEach((post, index) => { %>
+        <article>
+            <h3><%= post.title %></h3>
+            <p><%= post.content %></p>
+
+            
+            <button onclick="toggleEditForm(<%= index %>)">Edit</button>
+
+            
+            <div id="edit-form-<%= index %>" style="display: none;">
+                <form action="/edit" method="POST">
+                    <input type="hidden" name="index" value="<%= index %>">
+                    <input type="text" name="title" required value="<%= post.title %>">
+                    <textarea name="content" required><%= post.content %></textarea>
+                    <button type="submit">Update Post</button>
+                </form>
+            </div>
+
+            <form action="/delete/<%= index %>" method="POST" style="display: inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </article>
+    <% }); %>
+<% } else { %>
+    <p>No posts yet. Be the first to add one!</p>
+<% } %>
+
+<%- include("partials/footer.ejs") %>
+
+<script>
+    function toggleEditForm(index) {
+        const editForm = document.getElementById(`edit-form-${index}`);
+        editForm.style.display = (editForm.style.display === 'none' || editForm.style.display === '') ? 'block' : 'none';
+    }
+</script>
